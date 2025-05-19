@@ -1,10 +1,10 @@
 package db
 
 import (
+	"carbonbackend/db/model"
 	"fmt"
 	"os"
 	"time"
-	"wxcloudrun-golang/db/model"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

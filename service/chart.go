@@ -1,9 +1,9 @@
 package service
 
 import (
-	"wxcloudrun-golang/app/handlers/response"
-	"wxcloudrun-golang/db"
-	"wxcloudrun-golang/db/model"
+	"carbonbackend/app/handlers/response"
+	"carbonbackend/db"
+	"carbonbackend/db/model"
 )
 
 func GetMonthlyCEAStats() ([]response.MonthlyPriceStats, error) {

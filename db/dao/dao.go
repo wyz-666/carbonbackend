@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"wxcloudrun-golang/db"
-	"wxcloudrun-golang/db/model"
+	"carbonbackend/db"
+	"carbonbackend/db/model"
 )
 
 const tableName = "Counters"

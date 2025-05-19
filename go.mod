@@ -1,4 +1,4 @@
-module wxcloudrun-golang
+module carbonbackend
 
 go 1.16
 

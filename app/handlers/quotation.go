@@ -1,14 +1,14 @@
 package handlers
 
 import (
+	"carbonbackend/app/handlers/request"
+	"carbonbackend/app/handlers/response"
+	"carbonbackend/db"
+	"carbonbackend/db/model"
+	"carbonbackend/service"
 	"fmt"
 	"log"
 	"time"
-	"wxcloudrun-golang/app/handlers/request"
-	"wxcloudrun-golang/app/handlers/response"
-	"wxcloudrun-golang/db"
-	"wxcloudrun-golang/db/model"
-	"wxcloudrun-golang/service"
 
 	"net/http"
 

@@ -5,10 +5,10 @@ import (
 	"log"
 
 	// "net/http"
-	"wxcloudrun-golang/app/handlers"
-	"wxcloudrun-golang/app/middlewares"
-	"wxcloudrun-golang/db"
-	"wxcloudrun-golang/service"
+	"carbonbackend/app/handlers"
+	"carbonbackend/app/middlewares"
+	"carbonbackend/db"
+	"carbonbackend/service"
 
 	"github.com/gin-gonic/gin"
 )

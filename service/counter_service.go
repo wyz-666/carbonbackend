@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"wxcloudrun-golang/db/dao"
-	"wxcloudrun-golang/db/model"
+	"carbonbackend/db/dao"
+	"carbonbackend/db/model"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

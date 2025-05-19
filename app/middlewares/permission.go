@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"wxcloudrun-golang/app/handlers/response"
+	"carbonbackend/app/handlers/response"
 
 	"net/http"
 

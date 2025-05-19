@@ -1,8 +1,8 @@
 package test
 
 import (
+	"carbonbackend/db"
 	"testing"
-	"wxcloudrun-golang/db"
 )
 
 func TestMigrate(t *testing.T) {
