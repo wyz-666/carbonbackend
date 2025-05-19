@@ -29,7 +29,7 @@
       "envParams": {
         "MYSQL_USERNAME": "root",
         "MYSQL_PASSWORD": "dqzgslb+1S",
-        "MYSQL_ADDRESS": "sh-cynosdbmysql-grp-mi0wqumu.sql.tencentcdb.com:23061"
+        "MYSQL_ADDRESS": "10.11.101.249:3306"
       },
       "customLogs": "stdout",
       "dataBaseName": "golang_demo",
