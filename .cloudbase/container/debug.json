@@ -3,8 +3,7 @@
     {
       "name": "backend",
       "domain": "",
-      "ip": "",
-      "containerId": "backend-4g31fppw0e83ba29"
+      "ip": ""
     }
   ],
   "config": {
