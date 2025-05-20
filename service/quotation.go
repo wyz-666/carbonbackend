@@ -313,7 +313,8 @@ func GetApprovedSemimonthQuotations(t time.Time) ([]model.SemiMonthQuotation, er
 
 func GetApprovedMonthQuotations() ([]model.MonthQuotation, error) {
 	now := time.Now()
-	year, month, _ := now.Date()
+	year, month, day := now.Date()
+	hour, _, _ := now.Clock()
 	// year, month, day := t.Date()
 
 	// 获取本月最后一天
@@ -322,19 +323,19 @@ func GetApprovedMonthQuotations() ([]model.MonthQuotation, error) {
 
 	var targetPeriod string
 
-	// if day == 29 || (lastDay < 29 && day == lastDay) {
-	// 29号或特殊月最后一天，查下个月1-15号
-	nextMonth := month + 1
-	nextYear := year
-	if nextMonth > 12 {
-		nextMonth = 1
-		nextYear++
+	if (day == 26 && hour > 12) || (day > 26) {
+
+		nextMonth := month + 1
+		nextYear := year
+		if nextMonth > 12 {
+			nextMonth = 1
+			nextYear++
+		}
+		targetPeriod = fmt.Sprintf("%d年%d月\n", nextYear, nextMonth)
+	} else {
+		//不是公示日
+		return nil, errors.New("不是公示日")
 	}
-	targetPeriod = fmt.Sprintf("%d年%d月\n", nextYear, nextMonth)
-	// } else {
-	// 不是公示日
-	// return nil, errors.New("不是公示日")
-	// }
 
 	// 查询
 	var result []model.MonthQuotation
