@@ -17,7 +17,8 @@ import (
 func AddSemiMonth(quotation *request.ReqQuotation) error {
 	var resTime string
 	cli := db.Get()
-	resTime, qid, err := getSemiMonthTimeAndID(quotation.NowTime, cli)
+	// resTime, qid, err := getSemiMonthTimeAndID(quotation.NowTime, cli)
+	resTime, qid, err := getSemiMonthTimeAndID(cli)
 	if err != nil {
 		return err
 	}
@@ -57,7 +58,8 @@ func AddSemiMonth(quotation *request.ReqQuotation) error {
 func AddMonth(quotation *request.ReqQuotation) error {
 	var resTime string
 	cli := db.Get()
-	resTime, qid, err := getMonthTimeAndID(quotation.NowTime, cli)
+	// resTime, qid, err := getMonthTimeAndID(quotation.NowTime, cli)
+	resTime, qid, err := getMonthTimeAndID(cli)
 	if err != nil {
 		return err
 	}
@@ -96,10 +98,12 @@ func AddMonth(quotation *request.ReqQuotation) error {
 func AddYear(quotation *request.ReqQuotation) error {
 	var resTime string
 	cli := db.Get()
-	submitTime, _, err := getMonthTimeAndID(quotation.NowTime, cli)
-	resTime, qid, err := getYearTimeAndID(quotation.NowTime, cli)
+	submitTime, _, err := getMonthTimeAndID(cli)
+	now := time.Now()
+	newTime := now.Add(8 * time.Hour)
+	resTime, qid, err := getYearTimeAndID(newTime, cli)
 
-	start := quotation.NowTime.Truncate(24 * time.Hour)
+	start := newTime.Truncate(24 * time.Hour)
 	monthStart := time.Date(start.Year(), start.Month(), 1, 0, 0, 0, 0, time.Local)
 	nextMonthStart := monthStart.AddDate(0, 1, 0)
 
@@ -138,12 +142,15 @@ func AddYear(quotation *request.ReqQuotation) error {
 	return nil
 }
 
-func getSemiMonthTimeAndID(nowTime time.Time, db *gorm.DB) (string, string, error) {
-	// now := time.Now()
-	// year, month, day := now.Date()
-	year, month, day := nowTime.Date()
+// func getSemiMonthTimeAndID(nowTime time.Time, db *gorm.DB) (string, string, error) {
+func getSemiMonthTimeAndID(db *gorm.DB) (string, string, error) {
+	now := time.Now()
+	newTime := now.Add(8 * time.Hour)
+	year, month, day := newTime.Date()
+	// year, month, day := nowTime.Date()
 
-	dateStr := nowTime.Format("20060102")
+	// dateStr := nowTime.Format("20060102")
+	dateStr := newTime.Format("20060102")
 	// 查询今天已有多少条报价记录
 	var count int64
 	// err := db.Model(&model.SemiMonthQuotation{}).
@@ -187,14 +194,16 @@ func getSemiMonthTimeAndID(nowTime time.Time, db *gorm.DB) (string, string, erro
 	return "", "", errors.New("当前时间不可提交半月度报价")
 }
 
-func getMonthTimeAndID(nowTime time.Time, db *gorm.DB) (string, string, error) {
-	// now := time.Now()
-	// year, month, day := now.Date()
-	year, month, day := nowTime.Date()
-	hour, _, _ := nowTime.Clock()
+// func getMonthTimeAndID(nowTime time.Time, db *gorm.DB) (string, string, error) {
+func getMonthTimeAndID(db *gorm.DB) (string, string, error) {
+	now := time.Now()
+	newTime := now.Add(8 * time.Hour)
+	year, month, day := newTime.Date()
+	// year, month, day := nowTime.Date()
+	hour, _, _ := newTime.Clock()
 	log.Println("test hour:", hour)
 
-	dateStr := nowTime.Format("20060102")
+	dateStr := newTime.Format("20060102")
 	// 查询今天已有多少条报价记录
 	var count int64
 
