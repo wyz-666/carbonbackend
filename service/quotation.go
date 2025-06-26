@@ -396,3 +396,47 @@ func GetApprovedYearQuotations() ([]model.YearQuotation, error) {
 	// }
 
 }
+
+func AttachUserNameToMonthQuotations(db *gorm.DB, quotes []model.MonthQuotation) ([]model.MonthQuotationWithUser, error) {
+	var result []model.MonthQuotationWithUser
+
+	for _, quote := range quotes {
+		var user model.User
+		if err := db.Where("uuid = ?", quote.Uuid).First(&user).Error; err != nil {
+			// 记录找不到时可以跳过，或者记录空用户名
+			result = append(result, model.MonthQuotationWithUser{
+				MonthQuotation: quote,
+				UserName:       user.UserName,
+			})
+			continue
+		}
+		result = append(result, model.MonthQuotationWithUser{
+			MonthQuotation: quote,
+			UserName:       user.UserName,
+		})
+	}
+
+	return result, nil
+}
+
+func AttachUserNameToYearQuotations(db *gorm.DB, quotes []model.YearQuotation) ([]model.YearQuotationWithUser, error) {
+	var result []model.YearQuotationWithUser
+
+	for _, quote := range quotes {
+		var user model.User
+		if err := db.Where("uuid = ?", quote.Uuid).First(&user).Error; err != nil {
+			// 记录找不到时可以跳过，或者记录空用户名
+			result = append(result, model.YearQuotationWithUser{
+				YearQuotation: quote,
+				UserName:      user.UserName,
+			})
+			continue
+		}
+		result = append(result, model.YearQuotationWithUser{
+			YearQuotation: quote,
+			UserName:      user.UserName,
+		})
+	}
+
+	return result, nil
+}

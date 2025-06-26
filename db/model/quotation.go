@@ -44,3 +44,13 @@ type YearQuotation struct {
 	SubmitTime     string `gorm:"column:submitTime" json:"submitTime"`
 	Approved       bool   `gorm:"column:approved" json:"approved"`
 }
+
+type MonthQuotationWithUser struct {
+	MonthQuotation
+	UserName string `json:"userName"`
+}
+
+type YearQuotationWithUser struct {
+	YearQuotation
+	UserName string `json:"userName"`
+}

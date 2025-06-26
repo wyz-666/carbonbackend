@@ -244,11 +244,18 @@ func AdminGetMonthQuotation(c *gin.Context) {
 		nextYear++
 	}
 	nextMonthStr := fmt.Sprintf("%d年%d月\n", nextYear, nextMonth)
-	var res []model.MonthQuotation
+	var quoes []model.MonthQuotation
 	cli := db.Get()
-	err = cli.Where("applicableTime = ? AND product = ?", nextMonthStr, product).Find(&res).Error
+	err = cli.Where("applicableTime = ? AND product = ?", nextMonthStr, product).Find(&quoes).Error
 	if err != nil {
 		glog.Errorln("[ERROR]Admin Get Month Quotation error")
+		response.MakeFail(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	var res []model.MonthQuotationWithUser
+	res, err = service.AttachUserNameToMonthQuotations(cli, quoes)
+	if err != nil {
+		glog.Errorln("[ERROR]Admin Get Month Quotation with User error")
 		response.MakeFail(c, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -270,11 +277,18 @@ func AdminGetYearQuotation(c *gin.Context) {
 		nextYear++
 	}
 	nextMonthStr := fmt.Sprintf("%d年%d月\n", nextYear, nextMonth)
-	var res []model.YearQuotation
+	var quoes []model.YearQuotation
 	cli := db.Get()
-	err = cli.Where("submitTime = ? AND product = ?", nextMonthStr, product).Find(&res).Error
+	err = cli.Where("submitTime = ? AND product = ?", nextMonthStr, product).Find(&quoes).Error
 	if err != nil {
 		glog.Errorln("[ERROR]Admin Get Year Quotation error")
+		response.MakeFail(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	var res []model.YearQuotationWithUser
+	res, err = service.AttachUserNameToYearQuotations(cli, quoes)
+	if err != nil {
+		glog.Errorln("[ERROR]Admin Get Year Quotation with User error")
 		response.MakeFail(c, http.StatusBadRequest, err.Error())
 		return
 	}
