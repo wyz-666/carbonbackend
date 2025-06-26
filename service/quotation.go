@@ -99,6 +99,9 @@ func AddYear(quotation *request.ReqQuotation) error {
 	var resTime string
 	cli := db.Get()
 	submitTime, _, err := getMonthTimeAndID(cli)
+	if err != nil {
+		return err
+	}
 	now := time.Now()
 	newTime := now.Add(8 * time.Hour)
 	resTime, qid, err := getYearTimeAndID(newTime, cli)
@@ -220,7 +223,7 @@ func getMonthTimeAndID(db *gorm.DB) (string, string, error) {
 
 	// 判断是否为28号，或是特殊月的最后一天（28或27）
 	// if day == 28 || (lastDay < 29 && day == lastDay-1) {
-	if (day < 26 && day > 21) || (day == 26 && hour < 12) {
+	if (day < 26 && day > 21) || (day == 26 && hour < 19) {
 		// 下一个月
 		nextMonth := month + 1
 		nextYear := year
@@ -260,7 +263,7 @@ func getYearTimeAndID(nowTime time.Time, db *gorm.DB) (string, string, error) {
 	// 判断是否为29号，或是特殊月的最后一天（28或27）
 	// if day == 28 || (lastDay < 29 && day == lastDay-1) {
 	// 下一个月
-	if (day < 26 && day > 21) || (day == 26 && hour < 12) {
+	if (day < 26 && day > 21) || (day == 26 && hour < 19) {
 		nextMonth := month + 1
 		nextYear := year
 		if nextMonth > 12 {
