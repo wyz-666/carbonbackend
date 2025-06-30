@@ -45,14 +45,22 @@ func MarketSubmit(m *request.ReqMarket, s string) error {
 
 func GECStatsSubmit(e *request.ReqGECExpectation) error {
 	cli := db.Get()
+	priceF, err := strconv.ParseFloat(e.Price, 64)
+	if err != nil {
+		return fmt.Errorf("invalid price: %v", err)
+	}
+	priceIndexF, err := strconv.ParseFloat(e.PriceIndex, 64)
+	if err != nil {
+		return fmt.Errorf("invalid priceIndex: %v", err)
+	}
 	res := model.GECMonthExpectation{
 		Product:    e.Product,
 		Type:       e.Type,
 		Date:       e.Date,
-		Price:      e.Price,
-		PriceIndex: e.PriceIndex,
+		Price:      priceF,
+		PriceIndex: priceIndexF,
 	}
-	err := cli.Create(&res).Error
+	err = cli.Create(&res).Error
 	if err != nil {
 		log.Printf("[ERROR] GEC Submit stats error: %v", err)
 		return err
@@ -62,16 +70,28 @@ func GECStatsSubmit(e *request.ReqGECExpectation) error {
 
 func StatsSubmit(e *request.ReqExpectation) error {
 	cli := db.Get()
+	lowF, err := strconv.ParseFloat(e.LowerPrice, 64)
+	if err != nil {
+		return fmt.Errorf("invalid lowerPrice: %v", err)
+	}
+	highF, err := strconv.ParseFloat(e.HigherPrice, 64)
+	if err != nil {
+		return fmt.Errorf("invalid higherPrice: %v", err)
+	}
+	midF, err := strconv.ParseFloat(e.MidPrice, 64)
+	if err != nil {
+		return fmt.Errorf("invalid midPrice: %v", err)
+	}
 	if e.Product == "CEA" {
 		if e.Type == "month" {
 			e := model.CEAMonthExpectation{
 				Date:             e.Date,
-				LowerPrice:       e.LowerPrice,
-				HigherPrice:      e.HigherPrice,
-				MidPrice:         e.MidPrice,
-				LowerPriceIndex:  math.Round((e.LowerPrice/40.00)*10000) / 100,
-				HigherPriceIndex: math.Round((e.HigherPrice/44.32)*10000) / 100,
-				MidPriceIndex:    math.Round((e.MidPrice/42.16)*10000) / 100,
+				LowerPrice:       lowF,
+				HigherPrice:      highF,
+				MidPrice:         midF,
+				LowerPriceIndex:  math.Round((lowF/40.00)*10000) / 100,
+				HigherPriceIndex: math.Round((highF/44.32)*10000) / 100,
+				MidPriceIndex:    math.Round((midF/42.16)*10000) / 100,
 			}
 			err := cli.Create(&e).Error
 			if err != nil {
@@ -81,12 +101,12 @@ func StatsSubmit(e *request.ReqExpectation) error {
 		} else {
 			e := model.CEAYearExpectation{
 				Date:             e.Date,
-				LowerPrice:       e.LowerPrice,
-				HigherPrice:      e.HigherPrice,
-				MidPrice:         e.MidPrice,
-				LowerPriceIndex:  math.Round((e.LowerPrice/53.45)*10000) / 100,
-				HigherPriceIndex: math.Round((e.HigherPrice/58.26)*10000) / 100,
-				MidPriceIndex:    math.Round((e.MidPrice/55.86)*10000) / 100,
+				LowerPrice:       lowF,
+				HigherPrice:      highF,
+				MidPrice:         midF,
+				LowerPriceIndex:  math.Round((lowF/53.45)*10000) / 100,
+				HigherPriceIndex: math.Round((highF/58.26)*10000) / 100,
+				MidPriceIndex:    math.Round((midF/55.86)*10000) / 100,
 			}
 			err := cli.Create(&e).Error
 			if err != nil {
@@ -97,12 +117,12 @@ func StatsSubmit(e *request.ReqExpectation) error {
 	} else {
 		e := model.CCERMonthExpectation{
 			Date:             e.Date,
-			LowerPrice:       e.LowerPrice,
-			HigherPrice:      e.HigherPrice,
-			MidPrice:         e.MidPrice,
-			LowerPriceIndex:  math.Round((e.LowerPrice/39.78)*10000) / 100,
-			HigherPriceIndex: math.Round((e.HigherPrice/41.57)*10000) / 100,
-			MidPriceIndex:    math.Round((e.MidPrice/40.68)*10000) / 100,
+			LowerPrice:       lowF,
+			HigherPrice:      highF,
+			MidPrice:         midF,
+			LowerPriceIndex:  math.Round((lowF/39.78)*10000) / 100,
+			HigherPriceIndex: math.Round((highF/41.57)*10000) / 100,
+			MidPriceIndex:    math.Round((midF/40.68)*10000) / 100,
 		}
 		err := cli.Create(&e).Error
 		if err != nil {
