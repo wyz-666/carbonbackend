@@ -6,6 +6,8 @@ import (
 	"carbonbackend/db/model"
 	"fmt"
 	"log"
+	"sort"
+	"strings"
 	"time"
 
 	"errors"
@@ -437,6 +439,112 @@ func AttachUserNameToYearQuotations(db *gorm.DB, quotes []model.YearQuotation) (
 			UserName:      user.UserName,
 		})
 	}
+
+	return result, nil
+}
+
+func GetAllApprovedMonthQuotations() ([]model.MonthQuotation, error) {
+	cli := db.Get()
+
+	// 使用当前时间 +8小时，模拟北京时间（不使用 Location）
+	now := time.Now().Add(8 * time.Hour)
+
+	// 查出所有已通过审批的记录
+	var all []model.MonthQuotation
+	err := cli.Where("approved = ?", true).Find(&all).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var result []model.MonthQuotation
+
+	for _, q := range all {
+		appTime := strings.TrimSpace(q.ApplicableTime) // 例如 "2025年4月"
+
+		var y, m int
+		_, err := fmt.Sscanf(appTime, "%d年%d月", &y, &m)
+		if err != nil {
+			continue // 跳过解析失败的数据
+		}
+
+		// 能展示的时间是 (applicableTime的上一个月) 的 26日19点（北京时间）
+		showYear := y
+		showMonth := m - 1
+		if showMonth <= 0 {
+			showMonth = 12
+			showYear--
+		}
+
+		canShowTime := time.Date(showYear, time.Month(showMonth), 26, 19, 0, 0, 0, time.UTC).Add(8 * time.Hour)
+
+		if now.After(canShowTime) {
+			result = append(result, q)
+		}
+	}
+
+	// 按照 applicableTime 倒序排列
+	sort.Slice(result, func(i, j int) bool {
+		var y1, m1, y2, m2 int
+		fmt.Sscanf(strings.TrimSpace(result[i].ApplicableTime), "%d年%d月", &y1, &m1)
+		fmt.Sscanf(strings.TrimSpace(result[j].ApplicableTime), "%d年%d月", &y2, &m2)
+		if y1 != y2 {
+			return y1 > y2
+		}
+		return m1 > m2
+	})
+
+	return result, nil
+}
+
+func GetAllApprovedYearQuotations() ([]model.YearQuotation, error) {
+	cli := db.Get()
+
+	// 使用当前时间 +8小时，模拟北京时间（不使用 Location）
+	now := time.Now().Add(8 * time.Hour)
+
+	// 查出所有已通过审批的记录
+	var all []model.YearQuotation
+	err := cli.Where("approved = ?", true).Find(&all).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var result []model.YearQuotation
+
+	for _, q := range all {
+		appTime := strings.TrimSpace(q.SubmitTime) // 例如 "2025年4月"
+
+		var y, m int
+		_, err := fmt.Sscanf(appTime, "%d年%d月", &y, &m)
+		if err != nil {
+			continue // 跳过解析失败的数据
+		}
+
+		// 能展示的时间是 (applicableTime的上一个月) 的 26日19点（北京时间）
+		showYear := y
+		showMonth := m - 1
+		if showMonth <= 0 {
+			showMonth = 12
+			showYear--
+		}
+
+		canShowTime := time.Date(showYear, time.Month(showMonth), 26, 19, 0, 0, 0, time.UTC).Add(8 * time.Hour)
+
+		if now.After(canShowTime) {
+			result = append(result, q)
+		}
+	}
+
+	// 按照 applicableTime 倒序排列
+	sort.Slice(result, func(i, j int) bool {
+		var y1, m1, y2, m2 int
+		fmt.Sscanf(strings.TrimSpace(result[i].SubmitTime), "%d年%d月", &y1, &m1)
+		fmt.Sscanf(strings.TrimSpace(result[j].SubmitTime), "%d年%d月", &y2, &m2)
+		if y1 != y2 {
+			return y1 > y2
+		}
+		return m1 > m2
+	})
 
 	return result, nil
 }

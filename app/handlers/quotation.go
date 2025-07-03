@@ -154,7 +154,8 @@ func MonthPublish(c *gin.Context) {
 	log.Println("################## Publish Month Quotation ##################")
 	// timestr := c.Query("time")
 	// t, err := time.Parse("2006-01-02 15:04:05", timestr)
-	res, err := service.GetApprovedMonthQuotations()
+	// res, err := service.GetApprovedMonthQuotations()
+	res, err := service.GetAllApprovedMonthQuotations()
 	if err != nil {
 		glog.Errorln("publish month quotation error")
 		response.MakeFail(c, http.StatusBadRequest, err.Error())
@@ -168,7 +169,8 @@ func YearPublish(c *gin.Context) {
 	log.Println("################## Publish Year Quotation ##################")
 	// timestr := c.Query("time")
 	// t, err := time.Parse("2006-01-02 15:04:05", timestr)
-	res, err := service.GetApprovedYearQuotations()
+	// res, err := service.GetApprovedYearQuotations()
+	res, err := service.GetAllApprovedYearQuotations()
 	if err != nil {
 		glog.Errorln("publish year quotation error")
 		response.MakeFail(c, http.StatusBadRequest, err.Error())
