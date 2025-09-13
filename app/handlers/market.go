@@ -32,6 +32,40 @@ func MarketSubmit(c *gin.Context) {
 	return
 }
 
+func MarketBatchSubmit(c *gin.Context) {
+	log.Println("################## Market Batch Submit ##################")
+
+	// 定义批量请求的切片
+	var reqMarkets []request.ReqMarket
+
+	// 绑定 JSON 数组
+	if err := c.ShouldBind(&reqMarkets); err != nil {
+		log.Printf("[ERROR] : %v", err)
+		response.MakeFail(c, http.StatusNotAcceptable, err.Error())
+		return
+	}
+
+	// 判空
+	if len(reqMarkets) == 0 {
+		response.MakeFail(c, http.StatusBadRequest, "empty request body")
+		return
+	}
+
+	// 遍历逐个提交
+	for _, reqMarket := range reqMarkets {
+		err := service.MarketSubmit(&reqMarket, reqMarket.Product)
+		if err != nil {
+			log.Printf("[ERROR] submit failed for product=%s, date=%v : %v", reqMarket.Product, reqMarket.Date, err)
+			response.MakeFail(c, http.StatusBadRequest, err.Error())
+			return
+		}
+	}
+
+	log.Println("market batch submit successful")
+	response.MakeSuccess(c, http.StatusOK, "successfully batch submit!")
+	return
+}
+
 // 预测结果提交
 func StatsSubmit(c *gin.Context) {
 	log.Println("################## Stats Submit ##################")

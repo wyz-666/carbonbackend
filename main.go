@@ -74,6 +74,7 @@ func main() {
 		// admin.GET("approvingmonth", handlers.GetApprovingMonthQuotations)
 		// admin.GET("approvingyear", handlers.GetApprovingYearQuotations)
 		admin.POST("uploadMarket", handlers.MarketSubmit)
+		admin.POST("uploadMarketBatch", handlers.MarketBatchSubmit)
 		admin.POST("submitStats", handlers.StatsSubmit)
 		admin.POST("submitGECStats", handlers.GECStatsSubmit)
 		admin.GET("getCEA", handlers.GetCEAMarket)
