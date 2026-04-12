@@ -194,3 +194,38 @@ func checkLoginParams(reqLogin *request.ReqLogin) bool {
 	}
 	return true
 }
+
+func ChangePassword(c *gin.Context) {
+	log.Println("################## Change Password ##################")
+	var reqChangePwd request.ReqChangePassword
+	if err := c.ShouldBind(&reqChangePwd); err != nil {
+		log.Printf("[ERROR] change password bind error: %v", err)
+		response.MakeFail(c, http.StatusBadRequest, "参数错误")
+		return
+	}
+
+	if reqChangePwd.Uuid == "" || reqChangePwd.Account == "" || reqChangePwd.Phone == "" || reqChangePwd.NewPassword == "" {
+		response.MakeFail(c, http.StatusBadRequest, "缺少必要参数")
+		return
+	}
+
+	if reqChangePwd.NewPassword != reqChangePwd.ConfirmPassword {
+		response.MakeFail(c, http.StatusBadRequest, "两次输入的新密码不一致")
+		return
+	}
+
+	if len(reqChangePwd.NewPassword) < 9 {
+		response.MakeFail(c, http.StatusBadRequest, "新密码长度不能少于9位")
+		return
+	}
+
+	err := service.ChangePassword(reqChangePwd.Uuid, reqChangePwd.Account, reqChangePwd.Phone, reqChangePwd.NewPassword)
+	if err != nil {
+		log.Printf("[ERROR] change password error: %v", err)
+		response.MakeFail(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	log.Println("change password successful!")
+	response.MakeSuccess(c, http.StatusOK, "密码修改成功")
+}

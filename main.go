@@ -26,6 +26,8 @@ func main() {
 		user.POST("register", handlers.Register)
 		//登录
 		user.POST("login", handlers.Login)
+		//修改密码
+		user.POST("changePassword", handlers.ChangePassword)
 		//报价提交
 		// user.POST("semimonth", handlers.SemiMonthSubmit)
 		// user.POST("month", handlers.MonthSubmit)

@@ -175,3 +175,23 @@ func generateUuid(db *gorm.DB, account string) (string, error) {
 	}
 	return "", errors.New("无法生成唯一 UUID，请重试")
 }
+
+func ChangePassword(uuid, account, phone, newPassword string) error {
+	cli := db.Get()
+	var user model.User
+	if err := cli.Where("uuid = ?", uuid).First(&user).Error; err != nil {
+		return errors.New("用户不存在")
+	}
+
+	if user.Account != account {
+		return errors.New("账号验证失败")
+	}
+
+	if user.Phone != phone {
+		return errors.New("手机号验证失败")
+	}
+
+	newPasswordHash := crypto.CalculateSHA256(newPassword, "FDUCPIF")
+	user.PasswordHash = newPasswordHash
+	return cli.Save(&user).Error
+}
