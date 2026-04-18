@@ -27,7 +27,6 @@ type ReqUpdateUserType struct {
 }
 
 type ReqChangePassword struct {
-	Uuid            string `json:"uuid" form:"uuid"`
 	Account         string `json:"account" form:"account"`
 	Phone           string `json:"phone" form:"phone"`
 	NewPassword     string `json:"new_password" form:"new_password"`

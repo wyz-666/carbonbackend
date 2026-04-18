@@ -204,7 +204,7 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 
-	if reqChangePwd.Uuid == "" || reqChangePwd.Account == "" || reqChangePwd.Phone == "" || reqChangePwd.NewPassword == "" {
+	if reqChangePwd.Account == "" || reqChangePwd.Phone == "" || reqChangePwd.NewPassword == "" {
 		response.MakeFail(c, http.StatusBadRequest, "缺少必要参数")
 		return
 	}
@@ -219,7 +219,7 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 
-	err := service.ChangePassword(reqChangePwd.Uuid, reqChangePwd.Account, reqChangePwd.Phone, reqChangePwd.NewPassword)
+	err := service.ChangePassword(reqChangePwd.Account, reqChangePwd.Phone, reqChangePwd.NewPassword)
 	if err != nil {
 		log.Printf("[ERROR] change password error: %v", err)
 		response.MakeFail(c, http.StatusBadRequest, err.Error())
